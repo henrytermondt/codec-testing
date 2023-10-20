@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <!-- This project was amost called Codependent, but I couldn't find anyone else to support the idea -->
+        <title>Codec</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
+        <link rel="stylesheet" href="main-styles.css">
+
+        <style>
+            /* How to respond to different screen widths: */
+            @media (min-width: 1100px) { /* Normal */
+                #second-text {
+                    position: absolute;
+                    left: calc(var(--penrose-width) / 2);
+                }
+            }
+            @media (max-width: 1100px) {/* Thin */
+                /* Hide penroses */
+                #penrose1, #penrose2 { 
+                    display: none;
+                }
+                /* Center text */
+                #first-text, #second-text {
+                    left: calc(var(--penrose-width) / 4);
+                }
+                #second-text {
+                    margin-left: calc(var(--penrose-width) / 4);
+                }
+            }
+            @media (max-width: 840px) { /* Very thin */
+                /* Hide project showcase */
+                #showcase {
+                    display: none;
+                }
+                /* Set width and center text */
+                #first-text, #second-text {
+                    width: 400px !important;
+                    left: calc(50vw - 200px);
+                }
+                #second-text {
+                    margin-left: calc(50vw - 200px);
+                }
+            }
+
+            html {
+                width: 100%;
+                height: 100%;
+            }
+
+            /* Dimensions and layout for the container of the main section */
+            #main-container {
+                display: flex;
+
+                width: 100%;
+                height: min-content;
+                background-color: var(--primary);
+            }
+
+            #main {
+                position: relative;
+                flex-grow: 1;
+
+                height: 100%;
+
+                color: var(--primary-dark);
+
+                z-index: 0;
+            }
+
+            /* Dimensions, locations and layout for the first group of text */
+            #first-text {
+                position: relative;
+
+                width: calc(200vw / 3 - var(--penrose-width) / 2);
+                height: 640px;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+
+            /* More layout */
+            #first-text-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+
+            /* Details of the "Codec - Projects that inspire" text */
+            #title-container {
+                width: max-content;
+
+                margin: auto;
+                padding-left: 5px;
+
+                border-left: solid 3px;
+            }
+            #title-container h1 {
+                margin: -5px 0 0 0;
+
+                font-size: 40px;
+                font-weight: 700;
+            }
+            #title-container h3 {
+                margin: -10px 0 0 3px;
+                font-size: 15px;
+                font-weight: 500;
+            }
+
+            /* Details of the about text (the Codec's mission part) */
+            #about-text {
+                margin: 90px auto 0 auto;
+                padding: 5px;
+
+                max-width: 400px;
+
+                text-align: center;
+                font-size: 25px;
+            }
+
+            /* The button for exploring projects */
+            #explore-projects {
+                margin: 20px auto 0 auto;
+                max-width: 300px;
+                height: 50px;
+
+                color: var(--primary);
+                background-color: var(--primary-dark);
+
+                /* The lines around the border */
+                border-style: solid;
+                border-color: var(--primary);
+                border-width: 2px;
+                border-radius: 7px;
+
+                outline-style: solid;
+                outline-color: var(--primary-dark);
+
+                /* What should be animated */
+                transition: color 0.2s ease-out,
+                    border-color 0.2s ease-out,
+                    background-color 0.2s ease-out,
+                    outline-color 0.2s ease-out;
+
+                inset: 2px;
+
+                font-size: 25px;
+                font-family: inherit;
+
+                cursor: pointer;
+            }
+
+            #explore-projects:hover {
+                /* Invert colors */
+                color: var(--primary-dark);
+                border-color: var(--primary-dark);
+                background-color: var(--primary);
+                outline-color: var(--primary);
+            }
+
+            /* Purpose section */
+            #second-text {
+                top: 640px;
+                width: calc(200vw / 3 - var(--penrose-width) / 2);
+                height: 650px;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            #second-text h2 {
+                margin: 5px auto 5px auto;
+
+                font-size: 40px;
+            }
+            #purpose {
+                padding: 10px;
+
+                text-align: center;
+                font-size: 25px;
+
+                max-width: 400px;
+                margin: auto;
+            }
+
+            /* Penrose tilings' positions */
+            #penrose1-container {
+                position: absolute;
+                left: calc(100% - var(--penrose-width) / 2 - 0px);
+                top: calc(330px - var(--penrose-width) / 2 - 10px);
+            }
+            #penrose2-container {
+                position: absolute;
+                left: calc(var(--penrose-width) / -2 + 0px);
+                top: calc(970px - var(--penrose-width) / 2 + 15px);
+            }
+            #penrose1, #penrose2 {
+                animation-direction: reverse;
+            }
+            .penrose-container {
+                width: var(--penrose-width);
+
+                border-radius: 570px;
+                overflow: hidden;
+            }
+            /* Animation and other details */
+            .penrose {
+                animation-name: penrose-rotate;
+                animation-duration: 180s;
+                animation-timing-function: linear;
+                animation-iteration-count: infinite;
+
+                width: var(--penrose-width);
+
+                z-index: 1;
+            }
+            @keyframes penrose-rotate {
+                from {
+                    rotate: 0deg;
+                }
+                to {
+                    rotate: 360deg;
+                }
+            }
+
+            /* Separates the two sections of text with a thin line */
+            #pinline {
+                position: absolute;
+                width: 90%;
+                height: 2px;
+
+                top: 640px;
+                left: 5%;
+
+                border-radius: 10px;
+
+                background-color: var(--primary-dark);
+            }
+
+            /* General details for the project showcase */
+            #showcase {
+                width: calc(100vw / 3);
+                height: min-content;
+                background-color: var(--dark);
+
+                z-index: 2;
+            }
+            /* To keep the spacing look even, it actually has to be uneven */
+            #showcase .first {
+                height: 290px !important;
+            }
+
+            /* Positioning, size, and details of the image containers */
+            .img-container {
+                position: relative;
+                margin: 20px;
+                padding: 0;
+                border-radius: 10px;
+
+                width: calc(100% - 40px);
+                height: 300px;
+
+                display: block;
+                overflow: hidden;
+            }
+            /* Details of the images themselves */
+            .showcase-img {
+                position: absolute;
+                left: 50%;
+
+                width: calc(100vw / 3);
+                min-width: 700px;
+
+                margin: 0;
+                transform: translate(-50%, 0px);
+            }
+            /* Details of the titles of projects */
+            .title-card {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+
+                text-align: center;
+                margin: 0;
+                line-height: 300px;
+
+                opacity: 0.5;
+                transition: opacity 0.2s 0.1s ease-out;
+
+                background-color: var(--coyote-overlay);
+
+                cursor: pointer;
+            }
+            .title-link {
+                font-size: 40px;
+                color: var(--light);
+            }
+            /* Show is hovered over */
+            .title-card:hover {
+                opacity: 1;
+            }
+
+            #your {
+                color: var(--primary-dark);
+            }
+
+            /* Contains the page, but exists mostly for footer related purposes */
+            #wrapper {
+                display: flex;
+                flex-direction: column;
+                height: max-content;
+            }
+
+            /* Hide the footer if the page is big enough */
+            @media (max-height: 1290px) {
+                #footer {
+                    display: none;
+                }
+            }
+
+            /* Positioning of footer and friends */
+            #footer {
+                position: relative;
+
+                width: 100vw;
+                height: 100%;
+
+                background-color: var(--primary);
+            }
+            #footer * {
+                position: absolute;
+
+                border-top-left-radius: 40px;
+                overflow: hidden;
+            }
+
+            /* The animation for fading between images in the footer (when in mobile) */
+            @keyframes fade {
+                0% {
+                    opacity: 0;
+                }
+                6% {
+                    opacity: 1;
+                }
+                47% {
+                    opacity: 1;
+                }
+                53% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 0;
+                }
+            }
+            
+            /* Cover the entire available area and image positioning */
+            .footer-div {
+                width: 100%;
+                height: 100%;
+
+                background-position: center center;
+                background-size: cover;
+            }
+            /* Sets animations */
+            #footer-img2 {
+                animation-duration: 6.6s;
+                animation-fill-mode: forwards;
+                animation-iteration-count: infinite;
+                animation-name: fade;
+            }
+            #footer-filter {
+                background-color: var(--coyote-overlay);
+
+                backdrop-filter: blur(10px);
+            }
+
+            /* The explore button in the footer */
+            #footer-explore {
+                margin: auto;
+                width: max-content;
+                height: max-content;
+
+                padding: 10px 20px;
+
+                color: var(--primary);
+                background-color: transparent;
+
+                border-style: solid;
+                border-color: var(--primary);
+                border-width: 4px;
+                border-radius: 14px;
+
+                inset: 2px;
+
+                font-size: 50px;
+                font-family: inherit;
+
+                cursor: pointer;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div id='wrapper'>
+            <div id='main-container'>
+                <section id='main'>
+                    <!-- The header and the about section -->
+                    <section id='first-text'>
+                        <div id='first-text-container'>
+                            <!-- Header -->
+                            <div id='title-container'>
+                                <h1>Codec</h1>
+                                <h3>Projects that inspire</h3>
+                            </div>
+
+                            <!-- About -->
+                            <div id='about-text'>
+                                Codec's mission is to provide entertaining yet educational
+                                programming project ideas to grow <i style='text-decoration: underline;'>your</i> <!-- It's very tempting to use this link, haha: <a id='your' href='https://www.iamawesome.com/' target='_blank'>your</a>-->
+                                interest as well as aptitude at problem solving and programming.
+                            </div>
+
+                            <!-- Explore button -->
+                            <button id='explore-projects' onclick='window.location.href = "/browse";'>Explore Projects</button>
+                        </div>
+                    </section>
+
+                    <!-- The Penrose tilings -->
+                    <div id='penrose1-container' class='penrose-container'>
+                        <img id='penrose1' class='penrose' src='/projects/penrose-tilings/tinted-penrose1.png' width='400'>
+                    </div>
+                    <div id='penrose2-container' class='penrose-container'>
+                        <img id='penrose2' class='penrose' src='/projects/penrose-tilings/tinted-penrose2.png' width='400'>
+                    </div>
+
+                    <!-- Separates the mission statement from the why use it -->
+                    <div id='pinline'></div>
+
+                    <!-- Purpose section -->
+                    <section id='second-text'>
+                        <div id='purpose'>
+                            <h2>Why use Codec?</h2>
+                            Once people know the basics of programming,
+                            they often struggle to find projects that
+                            further their knowledge while also being fun.
+                            It's easy to lose motivation if a project
+                            like a game gets too large.<br>
+                            <br>
+                            <!--
+                            I find writing like to be hilarious. I'm
+                            really trying to channel all of the work-flow
+                            improvement ads that I get while on the internet.
+                            -->
+                            Codec is here to fix that with its
+                            supply of fascinating projects of a variety
+                            of difficulties.
+                        </div>
+                    </section>
+                </section>
+
+                <!-- The showcase of projects -->
+                <section id='showcase'>
+                    <!-- First card -->
+                    <div class='img-container first'>
+                        <img class='showcase-img'>
+                        <div class='title-card'>
+                            <span class='title-link'>Project 1</span>
+                        </div>
+                    </div>
+                    <!-- Second card -->
+                    <div class='img-container'>
+                        <img class='showcase-img'>
+                        <div class='title-card'>
+                            <span class='title-link'>Project 2</span>
+                        </div>
+                    </div>
+                    <!-- Third card -->
+                    <div class='img-container'>
+                        <img class='showcase-img'>
+                        <div class='title-card'>
+                            <span class='title-link'>Project 3</span>
+                        </div>
+                    </div>
+                    <!-- Fourth card -->
+                    <div class='img-container'>
+                        <img class='showcase-img'>
+                        <div class='title-card'>
+                            <span class='title-link'>Project 4</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <footer id='footer'>
+                <div id='footer-img1' class='footer-div'></div>
+                <div id='footer-img2' class='footer-div'></div>
+                <div id='footer-filter' class='footer-div'></div>
+
+                <button id='footer-explore' onclick='window.location.href = "/browse";'>Explore Projects</button>
+            </footer>
+        </div>
+
+        <!-- Tints the colors -->
+        <div id='filter'></div>
+
+        <!-- Deals with the project cards -->
+        <script>
+
+let projects; // The data of the projects
+
+// Gets all of the elements in the cards
+const projectsShowcaseCard = Array.from(document.querySelectorAll('.title-card')),
+    projectsShowcaseImg = Array.from(document.querySelectorAll('.showcase-img')),
+    projectsShowcaseTitle = Array.from(document.querySelectorAll('.title-link')),
+    dims = []; // Dimensions of the each showcase image
+
+// Sets up the showcase
+const setShowcase = () => {
+    // Creates temporary copies of the projects (they're needed so there aren't any copies in the showcase)
+    const tempProjects = Object.values(projects),
+        tempNames = Object.keys(projects);
+
+    for (const p of tempProjects) projectImages.push(p.img);
+
+    const imgPromises = [];
+
+    // Loops over all of the showcase cards and chooses a project for it
+    for (let i = 0; i < projectsShowcaseImg.length; i++) {
+        // Get the data associated with the card
+        const card = projectsShowcaseCard[i],
+            img = projectsShowcaseImg[i],
+            titleLink = projectsShowcaseTitle[i];
+        
+        // Choose a random project and remove it from the possibilities (prevents duplicates)
+        const index = Math.random() * tempProjects.length | 0;
+        const project = tempProjects.splice(index, 1)[0],
+            pName = tempNames.splice(index, 1)[0];
+
+        // Loads images
+        imgPromises.push(
+            new Promise(resolve => {
+                img.src = project.img;
+                img.onload = () => {
+                    dims[i] = {
+                        width: img.width,
+                        height: img.height,
+                    };
+                    setImgOffset(i);
+
+                    resolve(); // Finished loading
+                };
+            })
+        );
+
+        // Sets data
+        titleLink.textContent = project.name;
+        card.onclick = () => location.assign(`/projects?p=${pName}`);
+    }
+
+    // Adjust the positions of the images once they've all loaded
+    Promise.all(imgPromises).then(scroll);
+};
+
+/*
+The images in the showcase pan so you can see a different part of the image
+when you scroll down the page. Each image is offset so its center will be
+aligned with the center of its card when the page is scrolled down by n / m * 100
+percent, where n is the current showcase and m is the total number of
+showcase projects. This is very hard to explain, so here are some examples:
+The top most showcase image will be centered when the user hasn't scrolled
+at all. Assuming that there are only 4 showcase images, the second image will
+be centered when the user has scrolled down by 1/3, the third by 2/3, and the
+fourth image when the user has scrolled down to the bottom.
+
+This effect makes the showcase feel more subconciously satisfying
+*/
+const offsetAmount = 0.3;
+const setImgOffset = (index, useScroll) => {
+    const pindex = index / (projectsShowcaseImg.length - 1);
+    const adPercent = scrollPercent * offsetAmount // Scales it to the desired range
+        + (1 - offsetAmount) / 2 // Centers it
+        - offsetAmount * (pindex - 0.5); // Adjusts it further so the top project is centered at the top of the page and the bottom project is centered at the bottom of the page
+
+    const img = projectsShowcaseImg[index],
+        diff = img.height - 300,
+        pageAdjustedOffset = index;
+    img.style.transform = `translate(-50%, ${-diff * (useScroll ? adPercent : 0.5)}px)`;
+};
+
+let curImage = 0,
+    projectImages = [];
+const footerImgs = [
+    document.getElementById('footer-img2'),
+    document.getElementById('footer-img1'),
+];
+const setMobileShowcase = () => {
+    footerImgs[curImage % 2].style.backgroundImage = `url(${projectImages[++curImage % projectImages.length]})`;
+};
+let interval;
+
+// Fetches the project data
+fetch('/projects/projects.json').then(data => {
+    data.json().then(response => { // Loads the showcase
+        projects = response;
+
+        setShowcase();
+        setMobileShowcase();
+        setMobileShowcase();
+    });
+});
+
+let height; // The total height of the page
+document.addEventListener('readystatechange', () => {
+    height = Math.max( // Finds the maximum (there's a lot due to cross compatibility issues)
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.offsetHeight,
+        1290
+    );
+
+    document.getElementById('wrapper').style.height = (height - 1290 > 200 ? height : (height - 1290 <= 0 ? 1290 : 1490)) + 'px';
+});
+
+let scrollPercent = 0;
+const scroll = e => {
+    scrollPercent = window.scrollY / (height - window.innerHeight); // Percent scrolled
+
+    for (let i = 0; i < projectsShowcaseImg.length; i++) setImgOffset(i, height - window.innerHeight > 50); // Set the offset to every image
+};
+window.onscroll = scroll; // Whenever scrolled, call this function
+
+// Deals with rotating a mobile device
+const rotateMobile = () => {
+    // Changes height to include or exclude the footer images
+    document.getElementById('wrapper').style.height = (height - 1290 > 200 ? height : (height - 1290 <= 0 ? 1290 : 1490)) + 'px';
+
+    if (height <= 1290) { // Removes timer for updating images and animation
+        window.clearInterval(interval);
+        footerImgs[0].style.animationName = null;
+    } else { // Adds timer for updating images and the animation
+        curImage = 0;
+        
+        window.clearInterval(interval);
+        window.setTimeout(() => interval = window.setInterval(setMobileShowcase, 3300), 1650);
+
+        footerImgs[0].style.animationName = 'fade';
+    }
+};
+
+// How to deal with resizing the page
+const resize = () => {
+    height = Math.max( // Finds the maximum (there's a lot due to cross compatibility issues)
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.offsetHeight,
+        1290
+    );
+
+    rotateMobile();
+
+    let penroseWidth = window.innerWidth * 0.5;
+    if (penroseWidth > 570) penroseWidth = 570;
+    document.querySelector(':root').style.setProperty('--penrose-width', `${penroseWidth}px`);
+};
+window.onresize = resize;
+resize();
+        </script>
+    </body>
+</html>
