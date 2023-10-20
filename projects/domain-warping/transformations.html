@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Domain Warping Transformations - Codec</title>
+    <link rel="stylesheet" href="/main-styles.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--primary);
+        }
+
+        canvas {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id='canvas'></canvas>
+    <div id='filter'></div>
+
+    <script id='fragment-shader' type='glsl'>
+precision highp float;
+
+uniform vec2 size; // Screen size
+uniform float time; // Current time
+
+// Colors
+vec3 light = vec3(0.949, 0.914, 0.891);
+vec3 dark = vec3(0.533, 0.145, 0.165) / 1.3;
+
+void main() {
+    vec2 pos = gl_FragCoord.xy / size - 0.5;
+
+    // Offsets (warps the domain)
+    pos.x += sin(pos.y * sin(time * 0.05) * 80.0) * 0.03;
+    pos.y /= sin(time * 0.05) * 0.3 + 0.7;
+
+    // Gets the distance using the warped domain
+    float dist = pos.x * pos.x + pos.y * pos.y,
+        val = pow(min(200.0 * abs(dist - 0.1), 1.0), 8.0); // Essentially creates a ring with some fancy math so it has a thickness and looks smooth
+
+    gl_FragColor = vec4(mix(dark, light, val), 1); // Chooses colors
+}
+
+    </script>
+    
+    <!-- Imports compute shader library -->
+    <script src='/projects/compute-shader.js'></script>
+
+    <script>
+
+const cgl = new ComputeShaderContext(),
+    glCanvas = cgl.canvas,
+    gl = cgl.context;
+
+glCanvas.id = 'gl-canvas';
+document.body.appendChild(glCanvas);
+
+let dim; // Dimensions
+const setDim = () => {
+    dim = Math.min(window.innerWidth, window.innerHeight);
+    glCanvas.width = glCanvas.height = dim;
+
+    // Centers canvas
+    glCanvas.style.left = `${(window.innerWidth - dim) * 0.5}px`;
+    glCanvas.style.top = `${(window.innerHeight - dim) * 0.5}px`;
+};
+setDim();
+
+ComputeShader.useContext(cgl);
+
+let frame = 1;
+const size = new ComputeShaderUniform('size', '2fv', [dim, dim]),
+    time = new ComputeShaderUniform('time', '1f', frame);
+
+let render; // Rendering shader
+
+// How to resize the shader when the window is resized
+const resize = () => {
+    // Update dimensions
+    setDim();
+
+    size.update([dim, dim]);
+
+    // Recreate compute shader
+    render = new ComputeShader(document.getElementById('fragment-shader').textContent, dim, dim);
+    render.addUniform(size);
+    render.addUniform(time);
+
+    render.use(true);
+    render.initializeInputs();
+};
+window.onresize = resize;
+resize();
+
+
+const loop = () => {
+    time.update(frame ++);
+
+    render.initializeUniforms();
+    render.run();
+    window.requestAnimationFrame(loop);
+}
+loop();
+
+    </script>
+
+    <script></script>
+</body>
+
+</html>
