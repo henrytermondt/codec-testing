@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vector Motion - Codec</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/main-styles.css">
+        
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+
+                color: var(--primary-dark);
+                background-color: var(--primary);
+
+                font-family: 'Poppins', 'Trebuchet MS', Verdana, Tahoma, Roboto, sans-serif;
+            }
+
+            /* Positions for data about player object */
+            #stats {
+                position: absolute;
+                left: -5px;
+                top: -5px;
+                width: 245px;
+                height: min-content;
+
+                padding: 10px;
+
+                border-style: solid;
+                border-color: rgb(40, 40, 40);
+                border-width: 3px;
+                border-radius: 5px;
+            }
+            /* More formatting */
+            pre {
+                font-family: monospace;
+                font-size: 1.2em;
+                display: inline;
+            }
+        </style>
+        <style></style>
+    </head>
+    <body>
+        <canvas id='canvas'></canvas>
+        <div id='stats'>
+            Acceleration: <pre id='acc'></pre><br>
+            Velocity: <pre id='vel'></pre><br>
+            Speed: <pre id='mag'></pre><br>
+        </div>
+        <div id='filter'></div>
+        <script>
+
+// Setup
+const ctx = canvas.getContext('2d');
+
+let width = window.innerWidth,
+    height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
+
+// What to do when the screen resizes
+window.onresize = () => {
+    // Updates dimensions
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    // Redraws some parts
+    ctx.font = '15px Poppins';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.lineWidth = 3;
+    ctx.fillStyle = ctx.strokeStyle = 'rgb(85, 37, 42)';
+};
+
+// Gets keypresses
+const keys = {};
+window.addEventListener('keydown', e => keys[e.key.toLocaleLowerCase()] = true);
+window.addEventListener('keyup', e => keys[e.key.toLocaleLowerCase()] = false);
+
+const player = {
+    // Basic movement attributes
+    pos: [width * 0.5, height * 0.5],
+    vel: [0, 0],
+    acc: [0, 0],
+
+    // Other attributes
+    radius: 10,
+    friction: 0.97,
+    topSpeed: 40,
+
+    update() {
+        // Implicit Euler integration
+        this.vel[0] += this.acc[0] * dt;
+        this.vel[1] += this.acc[1] * dt;
+        this.pos[0] += this.vel[0] * dt;
+        this.pos[1] += this.vel[1] * dt;
+
+        this.acc[0] = this.acc[1] = 0;
+
+        // Get inputs
+        const left = keys['a'] || keys['arrowleft'],
+            right = keys['d'] || keys['arrowright'],
+            up = keys['w'] || keys['arrowup'],
+            down = keys['s'] || keys['arrowdown'];
+
+        // Speed
+        const mag = Math.sqrt(this.vel[0] * this.vel[0] + this.vel[1] * this.vel[1]);
+        
+        // Accelerate in intended direction
+        if (left) this.acc[0] = -0.5;
+        if (right) this.acc[0] = 0.5;
+        if (up) this.acc[1] = -0.5;
+        if (down) this.acc[1] = 0.5;
+
+        // When to slow down
+        if (!left && !right) {
+            const nvel = this.vel[0] * this.friction;
+            this.vel[0] += (nvel - this.vel[0]) * dt;
+        }
+        if (!up && !down) {
+            const nvel = this.vel[1] * this.friction;
+            this.vel[1] += (nvel - this.vel[1]) * dt;
+        }
+
+        // Slow down if too fast
+        if (mag > this.topSpeed) {
+            this.vel[0] *= this.topSpeed / mag;
+            this.vel[1] *= this.topSpeed / mag;
+        }
+
+        // Borders
+        if (this.pos[0] < this.radius) {
+            this.pos[0] = this.radius;
+            this.vel[0] *= -1;
+        }
+        if (this.pos[0] > width - this.radius) {
+            this.pos[0] = width - this.radius;
+            this.vel[0] *= -1;
+        }
+        if (this.pos[1] < this.radius) {
+            this.pos[1] = this.radius;
+            this.vel[1] *= -1;
+        }
+        if (this.pos[1] > height - this.radius) {
+            this.pos[1] = height - this.radius;
+            this.vel[1] *= -1;
+        }
+    },
+    display() {
+        ctx.beginPath();
+        ctx.arc(this.pos[0], this.pos[1], this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+    },
+};
+
+// Elements
+const accEl = document.getElementById('acc'),
+    velEl = document.getElementById('vel'),
+    magEl = document.getElementById('mag');
+
+// Graphics setup
+ctx.font = '15px Poppins';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+
+ctx.lineWidth = 3;
+ctx.fillStyle = ctx.strokeStyle = 'rgb(85, 37, 42)';
+
+let pt = 0,
+    dt = 1;
+
+const loop = t => {
+    ctx.clearRect(0, 0, width, height);
+
+    // Delta time
+    dt = (t - pt) * 60 / 1000 || 1; // Divides the time elapsed by the intended frames per second
+    pt = t;
+
+    player.update();
+    player.display();
+
+    // Update visuals
+    accEl.textContent = `[${
+        player.acc[0]
+            .toFixed(1)
+            .toString()
+            .padStart(4, ' ')
+    },${
+        player.acc[1]
+            .toFixed(1)
+            .toString()
+            .padStart(4, ' ')
+    }]`;
+    velEl.textContent = `[${
+        player.vel[0]
+            .toFixed(2)
+            .toString()
+            .padStart(6, ' ')
+    },${
+        player.vel[1]
+            .toFixed(2)
+            .toString()
+            .padStart(6, ' ')
+    }]`;
+    magEl.textContent = `${
+        Math.sqrt(player.vel[0] * player.vel[0] + player.vel[1] * player.vel[1])
+            .toFixed(2)
+            .toString()
+            .padStart(5, ' ')
+        }`;
+
+
+    ctx.fillText('Velocity Vector:', 100, 150);
+    ctx.beginPath();
+    ctx.moveTo(100, 200);
+    ctx.lineTo(100 + player.vel[0], 200 + player.vel[1]);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.fillText('Acceleration Vector:', 100, 270);
+    ctx.beginPath();
+    ctx.moveTo(100, 300);
+    ctx.lineTo(100 + player.acc[0] * 40, 300 + player.acc[1] * 40);
+    ctx.stroke();
+    ctx.closePath();
+
+    requestAnimationFrame(loop);
+};
+loop(0);
+
+
+        </script>
+    </body>
+</html>
