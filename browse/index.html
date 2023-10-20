@@ -28,7 +28,7 @@
                 flex: 0 0 150px;
 
                 /* Positions and scales the large penrose tiling in the header */
-                background-image: url('/projects/penrose-tilings/penrose-background.png');
+                background-image: url('/codec-testing/projects/penrose-tilings/penrose-background.png');
                 background-position: center center;
                 background-size: cover;
 
@@ -278,7 +278,7 @@
             <!-- Banner at the top -->
             <header>
                 <div id='cover-color'>
-                    <h1><a id='banner-title' href='/'>Codec</a></h1>
+                    <h1><a id='banner-title' href='/codec-testing'>Codec</a></h1>
                 </div>
             </header>
 
@@ -296,8 +296,8 @@
                     <!-- Navigation links -->
                     <div id='nav-container'>
                         <span id='nav-tab'></span>
-                        <a href='/'>Home</a></li>
-                        <a href='/browse/'>Browse</a></li>
+                        <a href='/codec-testing'>Home</a></li>
+                        <a href='/codec-testing/browse/'>Browse</a></li>
                         <a onclick='randomProject();' style='text-decoration: underline; cursor: pointer;'>Random</a></li>
                     </div>
 
@@ -310,7 +310,7 @@
                         <strong>Pages:</strong>
                         <ul>
                             <li><a href='/'>Home Page</a></li>
-                            <li><a href='/browse/'>Browse Projects</a></li>
+                            <li><a href='/codec-testing/browse/'>Browse Projects</a></li>
                             <li><a onclick='randomProject();' style='text-decoration: underline;'>Random Project</a></li>
                         </ul>
                     </div> -->
@@ -318,7 +318,7 @@
                 <!-- The penrose in the center -->
                 <div id='footer-img-container'>
                     <div id='penrose1-container' class='penrose-container'>
-                        <img id='penrose1' class='penrose' src='/projects/penrose-tilings/tinted-penrose1.png' width='400'>
+                        <img id='penrose1' class='penrose' src='/codec-testing/projects/penrose-tilings/tinted-penrose1.png' width='400'>
                     </div>
                 </div>
                 <div></div>
@@ -327,7 +327,7 @@
                     <strong>Pages:</strong>
                     <ul>
                         <li><a href='/'>Home Page</a></li>
-                        <li><a href='/browse/'>Browse Projects</a></li>
+                        <li><a href='/codec-testing/browse/'>Browse Projects</a></li>
                         <li><a onclick='randomProject();' style='text-decoration: underline;'>Random Project</a></li>
                     </ul>
                 </div> -->
@@ -356,13 +356,13 @@ function createProjectCard(name, project) { // Creates a card for a projects
 
     // Assigns the event listener for changing the page to the correct project
     container.onclick = () => {
-        window.location.assign(`/projects/?p=${name}`);
+        window.location.assign(`/codec-testing/projects/?p=${name}`);
     };
 
     // Sets the content of the card
     title.textContent = project.name;
     desc.textContent = project.desc
-    img.style.backgroundImage = `url('${project.img}')`;
+    img.style.backgroundImage = `url(/codec-testing'${project.img}')`;
 
     // Add the elements together
     container.append(img, title, desc);
@@ -378,11 +378,11 @@ const randomProject = () => { // Selects a random project that isn't the current
     let choice = `?p=${projectNames[Math.random() * projectNames.length | 0]}`
     while(choice === location.search) choice = `?p=${projectNames[Math.random() * projectNames.length | 0]}`
 
-    location.assign('/projects/' + choice); // Creates the path to the project page and sends the user there
+    location.assign('/codec-testing/projects/' + choice); // Creates the path to the project page and sends the user there
 };
 
 let projects; // All of the data for the projects
-fetch('/projects/projects.json').then(data => {
+fetch('/codec-testing/projects/codec-testing/projects.json').then(data => {
     data.json().then(response => {
         projects = response;
 
