@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Verlet Integration - Codec</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
+        <link rel="stylesheet" href="/main-styles.css">
+        
+        <style>
+            /* Style settup */
+            body {
+                margin: 0;
+                height: 100%;
+
+                font-family: 'Poppins', 'Trebuchet MS', Verdana, Tahoma, Roboto, sans-serif;
+            }
+            canvas, #check-container {
+                position: absolute;
+            }
+            #inner-check-container {
+                position: relative;
+                margin: 3px;
+                color: rgb(242, 233, 228);
+            }
+            #gravity-check {
+                position: relative;
+                top: 1px;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id='canvas'></canvas>
+        
+        <!-- The checkbox -->
+        <div id='check-container'>
+            <div id='inner-check-container'>
+                <input id='gravity-check' type='checkbox' checked>
+                <label for='gravity-check'>Gravity</label>
+            </div>
+        </div>
+        
+
+        <div id='filter'></div>
+        <script>
+
+// Stup
+const ctx = canvas.getContext('2d');
+
+const width = window.innerWidth,
+    height = window.innerHeight;
+
+canvas.width = width;
+canvas.height = height;
+
+
+const tau = Math.PI * 2,
+    borderRadius = Math.min(width, height) * 0.45;
+let grav = 0.5;
+
+// Adds the reaction for when the check is checked
+const gravCheck = document.getElementById('gravity-check');
+gravCheck.addEventListener('input', e => {
+    grav = gravCheck.checked ? 0.5 : 0;
+})
+
+const balls = [],
+    ballNum = (Math.min(width, height) / 70) ** 2 | 0;
+class Ball {
+    constructor(fixed = false, r = (Math.random() * 10 + 5)) {
+        const ang = Math.random() * tau,
+            dist = Math.random() * (borderRadius - r);
+
+        // Verlet parts
+        this.x = width * 0.5;
+        this.y = height * 0.5;
+        this.px = this.x + Math.random() * 10 - 5;
+        this.py = this.y + Math.random() * 10 - 5;
+
+        this.r = r;
+
+        // Not affected by physics
+        this.fixed = fixed;
+
+        this.shadowPos = [];
+    }
+    update() {
+        const vx = this.x - this.px,
+            vy = this.y - this.py;
+        this.px = this.x;
+        this.py = this.y;
+        
+        if (!this.fixed) {
+            this.x += vx;
+            this.y += vy + grav;
+        }
+    }
+    collide() {
+        // Goes over all balls and tests if they intersect, if they do, move them apart and update the velocities
+        for (let i = balls.length; i --;) {
+            const b = balls[i];
+            if (b === this) continue;
+
+            const dx = b.x - this.x,
+                dy = b.y - this.y,
+                dist = dx * dx + dy * dy; // Optimize by taking out root
+            if (dist < (this.r + b.r) * (this.r + b.r)) { // If intersecting
+                const overlap = Math.sqrt(dist);
+                const nx = dx / overlap,
+                    ny = dy / overlap,
+                    moveDist = (overlap - this.r - b.r) * 0.5;
+                if (!this.fixed) {
+                    this.x += nx * moveDist;
+                    this.y += ny * moveDist;
+                }
+                if (!b.fixed) {
+                    b.x -= nx * moveDist;
+                    b.y -= ny * moveDist;
+                }
+            }
+
+        }
+        
+        const dx = this.x - width * 0.5,
+            dy = this.y - height * 0.5,
+            dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist + this.r > borderRadius) {
+            const vx = this.x - this.px,
+                vy = this.y - this.py;
+            const nx = dx / dist,
+                ny = dy / dist;
+            this.x = nx * (borderRadius - this.r) + width * 0.5;
+            this.y = ny * (borderRadius - this.r) + height * 0.5;
+
+            const velMag = Math.sqrt(vx * vx + vy * vy);
+            this.px += vx / velMag * 0.01;
+            this.py += vy / velMag * 0.01;
+        }
+    }
+    display() {
+        ctx.fillStyle = 'rgb(85, 37, 42)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, tau);
+        ctx.fill();
+        ctx.closePath();
+    }
+    shadow() {
+        ctx.fillStyle = `rgb(${242 * 0.9}, ${233 * 0.9}, ${228 * 0.9})`;
+        for (let i = this.shadowPos.length; i --;) {
+            const spos = this.shadowPos[i];
+            
+            ctx.beginPath();
+            ctx.arc(spos[0], spos[1], this.r * (i / this.shadowPos.length), 0, tau);
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        this.shadowPos.push([this.x, this.y]);
+        if (this.shadowPos.length > 5) this.shadowPos.shift();
+    }
+
+    static collideIter = 10;
+}
+balls.push(new Ball(true, 20));
+
+let mx = 0,
+    my = 0;
+window.addEventListener('mousemove', e => {
+    mx = e.offsetX;
+    my = e.offsetY;
+});
+let paused = false;
+canvas.addEventListener('mousedown', e => paused = !paused);
+
+const loop = () => {
+    window.requestAnimationFrame(loop);
+
+    if (paused) return;
+
+    ctx.fillStyle = 'rgb(85, 37, 42)';
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = 'rgb(242, 233, 228)';
+    ctx.beginPath();
+    ctx.arc(width * 0.5, height * 0.5, borderRadius, 0, tau);
+    ctx.fill();
+    ctx.closePath();
+
+    if (balls.length < ballNum) balls.push(new Ball());
+
+    balls[0].x = mx;
+    balls[0].y = my;
+
+    for (const b of balls) b.update();
+    for (let i = Ball.collideIter; i --;) {
+        for (const b of balls) b.collide();
+    }
+    for (const b of balls) b.shadow();
+    for (const b of balls) b.display();
+
+};
+loop();
+
+
+        </script>
+    </body>
+</html>
