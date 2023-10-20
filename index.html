@@ -606,7 +606,7 @@ const setMobileShowcase = () => {
 let interval;
 
 // Fetches the project data
-fetch('/codec-testing/projects/codec-testing/projects.json').then(data => {
+fetch('/codec-testing/projects/projects.json').then(data => {
     data.json().then(response => { // Loads the showcase
         projects = response;
 
