@@ -428,16 +428,16 @@
                             </div>
 
                             <!-- Explore button -->
-                            <button id='explore-projects' onclick='window.location.href = "/browse";'>Explore Projects</button>
+                            <button id='explore-projects' onclick='window.location.href = "/codec-testing/browse";'>Explore Projects</button>
                         </div>
                     </section>
 
                     <!-- The Penrose tilings -->
                     <div id='penrose1-container' class='penrose-container'>
-                        <img id='penrose1' class='penrose' src='/projects/penrose-tilings/tinted-penrose1.png' width='400'>
+                        <img id='penrose1' class='penrose' src='/codec-testing/projects/penrose-tilings/tinted-penrose1.png' width='400'>
                     </div>
                     <div id='penrose2-container' class='penrose-container'>
-                        <img id='penrose2' class='penrose' src='/projects/penrose-tilings/tinted-penrose2.png' width='400'>
+                        <img id='penrose2' class='penrose' src='/codec-testing/projects/penrose-tilings/tinted-penrose2.png' width='400'>
                     </div>
 
                     <!-- Separates the mission statement from the why use it -->
@@ -503,7 +503,7 @@
                 <div id='footer-img2' class='footer-div'></div>
                 <div id='footer-filter' class='footer-div'></div>
 
-                <button id='footer-explore' onclick='window.location.href = "/browse";'>Explore Projects</button>
+                <button id='footer-explore' onclick='window.location.href = "/codec-testing/browse";'>Explore Projects</button>
             </footer>
         </div>
 
@@ -546,7 +546,7 @@ const setShowcase = () => {
         // Loads images
         imgPromises.push(
             new Promise(resolve => {
-                img.src = project.img;
+                img.src = '/codec-testing' + project.img;
                 img.onload = () => {
                     dims[i] = {
                         width: img.width,
@@ -561,7 +561,7 @@ const setShowcase = () => {
 
         // Sets data
         titleLink.textContent = project.name;
-        card.onclick = () => location.assign(`/projects?p=${pName}`);
+        card.onclick = () => location.assign(`/codec-testing/projects?p=${pName}`);
     }
 
     // Adjust the positions of the images once they've all loaded
@@ -601,12 +601,12 @@ const footerImgs = [
     document.getElementById('footer-img1'),
 ];
 const setMobileShowcase = () => {
-    footerImgs[curImage % 2].style.backgroundImage = `url(${projectImages[++curImage % projectImages.length]})`;
+    footerImgs[curImage % 2].style.backgroundImage = `url(/codec-testing/${projectImages[++curImage % projectImages.length]})`;
 };
 let interval;
 
 // Fetches the project data
-fetch('/projects/projects.json').then(data => {
+fetch('/codec-testing/projects/codec-testing/projects.json').then(data => {
     data.json().then(response => { // Loads the showcase
         projects = response;
 
