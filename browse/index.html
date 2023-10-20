@@ -382,7 +382,7 @@ const randomProject = () => { // Selects a random project that isn't the current
 };
 
 let projects; // All of the data for the projects
-fetch('/codec-testing/projects/codec-testing/projects.json').then(data => {
+fetch('/codec-testing/projects/projects.json').then(data => {
     data.json().then(response => {
         projects = response;
 
