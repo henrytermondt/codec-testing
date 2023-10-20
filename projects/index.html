@@ -1,1 +1,619 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
+        <link rel="stylesheet" href="/main-styles.css">
+        
+        <style>
+            /* General position and layout for the page */
+            #container {
+                position: absolute;
+                display: flex;
+                flex-direction: column;
 
+                width: 100%;
+                min-height: 100vh;
+                height: min-content;
+
+                background-color: var(--primary);
+            }
+
+            /* Header positioning */
+            header {
+                position: relative;
+                width: 100vw;
+                height: 150px;
+
+                flex: 0 0 150px;
+
+                background-position: center center;
+                background-size: cover;
+
+                border-radius: 0 0 20px 20px;
+                overflow: hidden;
+
+                box-shadow: 0px 0px 5px 2px var(--coyote);
+
+                z-index: 2;
+            }
+            /* Putting a filter over it so the colors don't take priority over the text */
+            header #cover-color {
+                width: 100%;
+                height: 100%;
+
+                background-color: rgb(46, 40, 54, 0.5);
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            header h1 {
+                position: relative;
+                width: max-content;
+                
+                font-size: 50px;
+            }
+            header * {
+                color: var(--primary);
+            }
+
+            /* Details and layout of the content of the article */
+            #main {
+                position: relative;
+                background-color: var(--primary);
+
+                margin-bottom: 50px;
+
+                z-index: 1;
+
+                flex: 1 0;
+
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+            }
+
+            /* Navigation between this project, the browse page, and other projects */
+            #project-nav-container {
+                width: 80%;
+                height: 80px;
+
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            /* The links and elements that make it up */
+            #back a, #next a, #arrow-back, #arrow-next {
+                height: 20px;
+                color: var(--primary-dark);
+                font-size: 20px;
+            }
+            #back {
+                margin-left: -25px;
+            }
+            #arrow-back {
+                margin-right: 0.4em;
+                transform: scale(-1, 1);
+                display: inline-block;
+            }
+            #arrow-next {
+                margin-left: 0.4em;
+            }
+            #next {
+                margin-right: -25px;
+            }
+
+            /* The content of the page */
+            #content {
+                width: 80%;
+
+                display: none;
+
+                animation-name: fade-in;
+                animation-duration: 0.2s;
+                animation-timing-function: ease-out;
+
+                text-align: justify;
+
+                color: var(--primary-dark);
+            }
+            #content a {
+                color: var(--dark);
+            }
+            
+            h1, h2, h3, h4, h5, h6 {
+                margin: 0;
+            }
+            p:not(#arrow) {
+                margin: 0;
+                text-indent: 3em;
+            }
+
+            #loading {
+                position: absolute;
+                top: 195px;
+                width: 100vw;
+                
+                text-align: center;
+                vertical-align: middle;
+
+                font-size: 20px;
+                color: var(--primary-dark);
+
+                opacity: 1;
+                transition: opacity 0.05s;
+            }
+
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            ul:not(footer ul) {
+                margin: 0;
+            }
+
+            /* Coloring and formatting elements within the footer */
+            footer {
+                position: relative;
+                
+                display: flex;
+                flex: 0 0 0;
+                flex-direction: row;
+
+                color: var(--primary);
+                background-color: var(--primary-dark);
+            }
+            footer a {
+                color: var(--primary);
+            }
+            footer strong {
+                margin-left: 16px;
+            }
+            footer ul {
+                margin: 0;
+            }
+
+            /* The section on the left */
+            #footer-nav {
+                margin-top: 27px;
+                margin-left: 5%;
+            }
+            /* Codec */
+            #footer-logo {
+                margin-left: 0px;
+                font-size: 40px;
+            }
+            /* Makes a small white line to offset the text so it matches the copyright c */
+            #nav-tab {
+                position: relative;
+                top: 4px;
+                width: 2px;
+                height: 1.2em;
+                
+                border-radius: 2px;
+
+                background-color: var(--primary);
+                margin-right: 2px;
+            }
+            /* Contains the links */
+            #nav-container {
+                position: relative;
+                top: 3px;
+                margin-left: 7px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                width: 200px;
+                flex-grow: 1;
+            }
+            #copyright {
+                margin-top: 18px;
+                margin-left: 2px;
+            }
+
+            /* REMOVE */
+            #half {
+                top: calc(50% - 1px);
+            }
+            #quarter {
+                top: calc(21% - 1px);
+            }
+            #three-quarters {
+                top: calc(79% - 1px);
+            }
+            .test-line {
+                position: absolute;
+                left: 0px;
+                width: 100%;
+                height: 2px;
+
+                background-color: white;
+            }
+
+            #contact-container {
+                position: absolute;
+                right: 0px;
+            }
+
+            /* The penrose */
+            #footer-img-container {
+                height: calc(var(--penrose-width) + 20px);
+            }
+            .penrose-container {
+                position: absolute;
+                top: 0px;
+                height: 100%;
+                left: calc(50% - var(--penrose-width) * 0.5);
+                
+                overflow: hidden;
+            }
+            
+            /* Hide the penrose if the screen is too thin */
+            @media (max-width: 1000px) {
+                #penrose1 {
+                    display: none;
+                }
+            }
+            #penrose1 {
+                position: relative;
+                top: 10px;
+
+                width: calc(var(--penrose-width));
+
+                z-index: 1;
+            }
+
+            /* Styles of images in the content */
+            .img-container {
+                position: relative;
+                width: 100%;
+
+                margin: 10px 0;
+                
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .math-img {
+                margin: 0 15px;
+                display: inline-block;
+            }
+            .big-img {
+                border-style: solid;
+                border-color: var(--primary-dark);
+                border-radius: 10px;
+                border-width: 3px;
+            }
+            .img {
+                width: 195px;
+                margin: 7px 7px 0 12px;
+                float: right;
+
+                border-style: solid;
+                border-color: var(--primary-dark);
+                border-radius: 10px;
+                border-width: 3px;
+            }
+            .caption {
+                margin-top: 2px;
+                font-size: small;
+            }
+
+            /* Formatting code in articles */
+            .code {
+                position: relative;
+                background-color: var(--light);
+                
+                border-radius: 30px;
+
+                margin-left: -10px;
+                width: calc(100% + 20px);
+            }
+            /* Deals with spacing and line wraps */
+            .code pre {
+                padding: 7px 20px;
+                white-space: break-spaces;
+                overflow-wrap: break-word;
+                width: calc(100% - 35px);
+            }
+            /* The small line on the left of the container */
+            .code-pinline {
+                position: absolute;
+                top: 16px;
+                left: 10px;
+                width: 2px;
+                height: calc(100% - 32px);
+
+                border-radius: 10px;
+                background-color: var(--primary);
+            }
+
+            /* A centered element */
+            .center {
+                position: relative;
+                left: 20px;
+                width: calc(100% - 40px);
+
+                text-align: center;
+                text-indent: 0 !important;
+            }
+
+            m-el {
+                pointer-events: none;
+            }
+        </style>
+        <style></style>
+    </head>
+    <body>
+        <div id='container'>
+            <!-- Header -->
+            <header>
+                <div id='cover-color'>
+                    <h1 id='banner-title'></h1>
+                    <h4>By <a href='/'>Codec</a></h4>
+                </div>
+            </header>
+
+            <!-- Main content -->
+            <section id='main'>
+                <div id='loading'>Loading...</div>
+
+                <!-- The navigation links -->
+                <div id='project-nav-container'>
+                    <span id='back' class='arrow-container'>
+                        <span id='arrow-back'>&#129122;</span><a href='/browse'>Browse Projects</a>
+                    </span>
+                    <span id='next' class='arrow-container'>
+                        <a onclick='randomProject?.();' style='text-decoration: underline;'>Random Project</a><span id='arrow-next'>&#129122;</span>
+                    </span>
+                    
+                </div>
+                
+                <!-- The content of the page -->
+                <div id='content'>
+<!-- <p class='center'>
+    This article builds off of the ideas presented in <a href='/projects/?p=vector-motion'>Vector Motion</a>.
+    It's suggested that you read that article before continuing.
+</p>
+<br>
+<h2>What is Verlet Integration?</h2>
+<p>
+    Verlet integration is another integration method, but it has a property which
+    makes it a very good choice for simple physics simulations. That property is
+    that it automatically handles velocity redirection. What does that jargin I
+    just created mean? Think about a Magic 8 Ball, majestically floating above a
+    hill. You ask it your fate, but it does not want to answer, because it knows
+    you will not like it. It subjects itself to the will of physics, and drops
+    straight down. As it hits the hill side, it does not fall through the hill,
+    but rather, it rolls along the surface of the hill. The velocity of the ball
+    was redirected from going straight down to going at an angle. In a physics
+    simulation with Euler integration, you have to redirect the velocity in
+    addition to doing other things. With Verlet integration, that redirection is
+    a byproduct of doing those other things. How nice! This simplifies the
+    calculations significantly, making many projects, like cloth simulations
+    much easier. Verlet integration isn't the most accurate, so it's good for
+    visuals, but not for highly accurate simulations.
+</p>
+<br>
+<h2>How is it Created?</h2>
+<p>
+    The main difference between Verlet integration and many other methods is that it
+    doesn't keep trace of an object's velocity. Instead, it keeps track of the
+    previous position. Since the velocity is simply the difference in positions,
+    it can be calculated by subtracing the previous position from the current one.
+    You can add forces like gravity by adding it to the velocity at this step.
+    After this, simply set the previous position to the current position and add the velocity
+    to the current position. That's it! However, the benefits of Verlet integration
+    won't be apparent if you just implement this; it'll look the exact same as
+    the implicit Euler method.
+</p>
+<br>
+<h2>Creating a Demo</h2>
+<p>
+    One of the easiest ways to show the wonders of Verlet integration is to make
+    a simple physics simulation of balls interacting with each other and rolling
+    around. One such simulation can be found
+    <a href='/projects/verlet-integration/verlet-integration.html'>here</a> (click
+    to pause and move your mouse to control a ball). Verlet integration already handles
+    the movement caused by gravity if you add it as a force, like mentioned before.
+    The next thing to do is to create a boundary so the balls don't fall out of sight.
+    To do this, simply check is past the barrier, and if so, move its position to the
+    closest point that is within the boundary. Verlet integration takes care of making
+    sure that the ball starts to roll in the correct direction automatically. Having
+    a singular ball is a bit unexciting, so adding more balls is a good idea. At this
+    point in time, all of the balls with phase through each other. In order to make
+    the balls interact, check if any two balls are intersecting. If any are, find out
+    how much they overlap and move them each away from each other by half of the distance
+    they overlap each other (each moving them by half ends up moving them so they touch
+    without overlapping. If the half part still seems a bit weird, remember that moving
+    one ball half of the overlapping distance in one direction and the other ball the
+    other half in the opposite direction is equivalent to <m-el>\(0.5+0.5=1\)</m-el>).
+</p>
+<p>
+    For small numbers of balls, this current method will work well; however, adding
+    more balls will cause the balls to sink into each other, because, though the collision
+    code for balls will prevent any two balls from overlapping, the corrections can push
+    a ball into another ball. This sinking effect generally looks fairly odd. To get rid
+    of it, all you have to do is check all of the intersections multiple times. Each pass,
+    each ball will find a position that overlaps with its neighbors less and less.
+    This is all of it! You never have to touch the velocity when doing the collisions. All of
+    it is handled automatically.
+</p>
+<br>
+<h2>Further Reading</h2>
+<ul id = 'further-reading-list'>
+    <li>
+        <a href='https://www.youtube.com/watch?v=3HjO_RGIjCU' target='_blank'>Verlet Integration Part I</a> - Coding Math.
+        The start of a series which covers Verlet integration and how to create
+        more advanced physics simulations.
+    </li>
+    <li>
+        <a href='https://en.wikipedia.org/wiki/Verlet_integration' target='_blank'>Verlet integration</a> - Wikipedia.
+        Thoroughly covers the mathematics.
+    </li>
+</ul> -->
+
+                    <!-- <m-el>\(\)</m-el> -->
+                    <!-- <m-el>\[\]</m-el> -->
+                </div>
+            </section>
+            <footer>
+                <div id='footer-nav'>
+                    <strong id='footer-logo'>Codec</strong>
+
+                    <!-- Nav links -->
+                    <div id='nav-container'>
+                        <span id='nav-tab'></span>
+                        <a href='/'>Home</a></li>
+                        <a href='/browse/'>Browse</a></li>
+                        <a onclick='randomProject();' style='text-decoration: underline; cursor: pointer;'>Random</a></li>
+                    </div>
+
+                    <div id='copyright'>&copy; 2023. Henry Termondt. All rights reserved.</div>
+                </div>
+                <!-- <div id='half' class='test-line'></div>
+                <div id='quarter' class='test-line'></div>
+                <div id='three-quarters' class='test-line'></div> -->
+                <!-- <div id='nav-container'>
+                        <strong>Pages:</strong>
+                        <ul>
+                            <li><a href='/'>Home Page</a></li>
+                            <li><a href='/browse/'>Browse Projects</a></li>
+                            <li><a onclick='randomProject();' style='text-decoration: underline;'>Random Project</a></li>
+                        </ul>
+                    </div> -->
+
+                <!-- The penrose in the center of the footer -->
+                <div id='footer-img-container'>
+                    <div id='penrose1-container' class='penrose-container'>
+                        <img id='penrose1' class='penrose' src='/projects/penrose-tilings/tinted-penrose1.png' width='400'>
+                    </div>
+                </div>
+                <div></div>
+
+                <!-- <div id='contact-container'>
+                    <strong>Pages:</strong>
+                    <ul>
+                        <li><a href='/'>Home Page</a></li>
+                        <li><a href='/browse/'>Browse Projects</a></li>
+                        <li><a onclick='randomProject();' style='text-decoration: underline;'>Random Project</a></li>
+                    </ul>
+                </div> -->
+            </footer>
+        </div>
+        
+        <!-- For getting the correct coloring -->
+        <div id='filter'></div>
+
+        <script>
+
+// Defines a custom element. It makes code easier to read as well as write by shortening the name of elements that hold math
+class MathElement extends HTMLElement {
+    constructor() { // Has no special functionality as it is simply to wrap math and provide a selector for the CSS
+        super();
+    }
+}
+customElements.define('m-el', MathElement);
+
+// const math = document.querySelectorAll('m-el');
+// for (const m of math) {
+//     if (m.innerHTML[1] === '(') {
+//         console.log(m.innerHTML);
+//         m.innerHTML = m.innerHTML.slice(0, 2) + '\\smash{' + m.innerHTML.slice(2)
+//         m.innerHTML = m.innerHTML.slice(-Infinity, -2) + '}' + m.innerHTML.slice(-2)
+//         console.log(m.innerHTML);
+//     }
+    
+// }
+
+        </script>
+
+        <script>
+
+const pkey = new URLSearchParams(window.location.search).get('p'); // What is the program?
+
+// Gets the titles and header
+const title = document.querySelector('title'),
+    header = document.querySelector('header'),
+    bannerTitle = document.getElementById('banner-title');
+
+const loading = document.getElementById('loading'),
+    content = document.getElementById('content');
+
+const setIncompletePage = () => { // What should be run when the page either isn't complete?
+    return 'Uh oh! This page appears to be uncomplete. Please come back later.';
+};
+
+let info;
+const onInfoLoad = () => {
+    // Update elements so it all displays well
+    title.textContent = info.name;
+    header.style.backgroundImage = `url(${info.img})`;
+    bannerTitle.textContent = info.name;
+    loading.style.opacity = '0';
+    
+    // What to do with varying levels of information
+    if (info.html) content.innerHTML = info.html;
+    else if (content.textContent.replaceAll('\n', '').replaceAll(' ', '') === '') content.innerHTML = setIncompletePage();
+    content.style.display = 'block';
+
+    /*
+    Since the content of the page is loaded in with a small delay, there's a good chance that MathJax
+    will load too soon and not turn the LaTeX notation into the wonderous mathematical symbols, so this
+    delays the script until it's needed
+    */
+    const mathjax = document.createElement('script');
+    mathjax.id = 'MathJax-script';
+    mathjax.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js';
+    mathjax.async = true;
+    document.querySelector('head').appendChild(mathjax);
+};
+
+let projectNames;
+const randomProject = () => { // Selects a random project that isn't the current one
+    let choice = `?p=${projectNames[Math.random() * projectNames.length | 0]}`
+    while(choice === location.search) choice = `?p=${projectNames[Math.random() * projectNames.length | 0]}`
+
+    location.search = choice;
+};
+
+// Fetches information
+fetch('/projects/projects.json').then(data => {
+    data.json().then(response => { // Load the page once the data is fetched
+        info = response[pkey];
+        onInfoLoad();
+
+        projectNames = Object.keys(response)
+    });
+});
+
+const resize = () => { // Dealing with resizing pages and the Penrose tilings
+    let penroseWidth = window.innerWidth * 0.25;
+    if (penroseWidth > 170) penroseWidth = 170;
+    document.querySelector(':root').style.setProperty('--penrose-width', `${penroseWidth}px`);
+};
+window.onresize = resize;
+resize();
+
+const getContent = () => {
+    console.log(content.innerHTML);
+};
+
+// Recent {
+// {"raytracing":{"name":"Raytracing","img":"./projects/raytracing/thumbnail.png","desc":"Render realistic 3D scenes by simulating light rays"},"penrose-tilings":{"name":"Penrose Tilings","img":"./projects/penrose-tilings/penrose-background.png","desc":"Create the geometric tilings found on this webpage"},"newtons-fractal":{"name":"Newton's Fractal","img":"./projects/newtons-fractal/thumbnail.png","desc":"Use Newton's method to create an iconic fractal"},"life":{"name":"Conway's Game of Life","img":"./projects/conways-game-of-life/thumbnail.png","desc":"Create cellular automata that mimic life","html":"\n                    <h2>What is Conway's Game of Life?</h2>\n                    <div>\n                        <img class = 'img' src = './projects/conways-game-of-life/thumbnail.png'>\n                        <p>\n                            Conway's Game of Life is something called a <i>cellular automata</i>\n                            which tries to mimic how life works through a simple set of rules.\n                            A cellular automata is made up of a grid of tiles, called cells, each\n                            with a state. In this case, the only possible states are either alive\n                            or dead. A cell will change its state from alive to dead and vice versa\n                            based on the number of living cells surrounding it.\n                            Different cellular automata (like Day and Night, which is another project\n                            you can try out) are defined by how different numbers of living cells\n                            change a cell's state as well as how many states exist. In this case,\n                            if there is a cell with 2-3 living neighbors, then the cell survives\n                            on to the next generation, but any living cell with more than 3 living neighbors\n                            will die and change state. This mimics overpopulation. Likewise, any\n                            cell with <i>fewer</i> than 2 living neighbors will die which represents\n                            underpopulation. There is just one last rule. If a dead cell has\n                            precisely 3 living neighbors, it will become a living cell again. This\n                            mimics reproduction, completing the cycle of life.\n                        </p>\n                    </div>\n                    <br>\n                    <h2>Interesting Patterns</h2>\n                    <div>\n                        <p>\n                            <img class = 'img' style = 'position: relative; image-rendering: pixelated;' src = './projects/conways-game-of-life/glider.png'>\n                            One of the joys of this project is setting the initial states of the cells\n                            to be a certain pattern and watching it evolve. You might find that some of\n                            the starting patterns will have special properties. Some of the more common\n                            special properties (ignore the oxymoron; they're important to notice but\n                            often irrelevant (haha)) are sorted into three groups: still lifes, oscillators,\n                            and spaceships. Still lifes are unchanging, while oscillators repeat some number\n                            of patterns indefinitely. Spaceships are like oscillators, because they always\n                            return to a certain pattern, but they also move across the grid of cells. On\n                            the right is arguably the simplest spaceship. There are still very many more\n                            interesting starting patterns, which you can find in the website listed in the\n                            <a href = '#further-reading'>further reading</a> section.\n                        </p>\n                    </div>\n                    <br>\n                    <h2>Common Pitfalls</h2>\n                    <p>\n                        The most common area where people go wrong is to update the grid of cells\n                        as you're looking at it. Essentially, you have a copy of the original grid\n                        which you reference in order to know the number of living neighbors around\n                        a cell and you update the original while looking at the copy. This prevents\n                        you from trying to reference parts of the grid which are already part of the\n                        next generation. The incorrect version is called Naive Life.\n                    </p>\n                    <br>\n                    <h2>Background</h2>\n                    <p>\n                        Conway's Game of Life is often shortened to The Game of Life, or just Life.\n                        As you might have guessed, it was invented by John Conway. He called\n                        it a 0 player game since all you have to do is input a pattern and the\n                        game will play itself until it reaches a predictable state. An interesting\n                        concept that has a connection to Conway's Game of Life is the idea of\n                        Turing Completeness. If a system is Turing complete, it is able to solve\n                        any logical problem that can be solved (it might surprise you that some\n                        problems in math and programming literally <i>cannot</i> be solved). Conway's\n                        Game of Life just so happens to be Turing complete, just like a lot of\n                        programming languages and even popular video games. What that means is\n                        that the Game of Life can technically solve anything that you can. This\n                        can be taken to the extreme, and people have even coded the\n                        <a href = 'https://www.youtube.com/watch?v=xP5-iIeKXE8' target = '_blank'>Game of Life inside of itself</a>!\n                    </p>\n                    <br>\n                    <h2 id = 'further-reading'>Further Reading</h2>\n                    <ul id = 'further-reading-list'>\n                        <li><a href = 'https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'>Wikipedia: Conway's Game of Life</a></li>\n                    </ul>\n                "}}
+//}
+//{"raytracing":{"name":"Raytracing","img":"./projects/raytracing/thumbnail.png","desc":"Render realistic 3D scenes by simulating light rays"},"penroseTilings":{"name":"Penrose Tilings","img":"./projects/penrose-tilings/penrose-background.png","desc":"Create the geometric tilings found on this webpage"},"newtonsFractal":{"name":"Newton's Fractal","img":"./projects/newtons-fractal/thumbnail.png","desc":"Use Newton's method to create an iconic fractal"},"life":{"name":"Conway's Game of Life","img":"./projects/conways-game-of-life/thumbnail.png","desc":"Create cellular automata that mimic life"}}
+        </script>
+    </body>
+</html>
