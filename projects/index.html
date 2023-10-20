@@ -589,7 +589,7 @@ const randomProject = () => { // Selects a random project that isn't the current
 };
 
 // Fetches information
-fetch('/codec-testing/projects/codec-testing/projects.json').then(data => {
+fetch('/codec-testing/projects/projects.json').then(data => {
     data.json().then(response => { // Load the page once the data is fetched
         info = response[pkey];
         onInfoLoad();
