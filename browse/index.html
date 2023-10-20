@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Browse Projects - Codec</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
+        <link rel="stylesheet" href="/main-styles.css">
+        <style>
+            /* Main position and layout of the page */
+            #container {
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+
+                width: 100%;
+                min-height: 100vh;
+                height: min-content;
+                background-color: var(--primary);
+            }
+
+            /* Details of the header */
+            header {
+                position: relative;
+                width: 100vw;
+                height: 150px;
+
+                flex: 0 0 150px;
+
+                /* Positions and scales the large penrose tiling in the header */
+                background-image: url('/projects/penrose-tilings/penrose-background.png');
+                background-position: center center;
+                background-size: cover;
+
+                border-radius: 0 0 20px 20px;
+                overflow: hidden;
+
+                box-shadow: 0px 0px 5px 2px var(--coyote);
+
+                z-index: 2;
+            }
+            header #cover-color {
+                width: 100%;
+                height: 100%;
+
+                background-color: rgb(46, 40, 54, 0.5);
+                /* var(--secondary-overlay); */
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+            header h1 {
+                position: relative;
+                width: min-content;
+                
+                font-size: 50px;
+            }
+            header #banner-title {
+                color: var(--primary);
+            }
+
+            /* Container for the main content of the page */
+            #main {
+                position: relative;
+                width: 100%;
+                background-color: var(--primary);
+
+                flex: 1 0;
+                z-index: 1;
+            }
+            
+            #loading {
+                position: absolute;
+                top: 195px;
+                width: 100vw;
+                text-align: center;
+                vertical-align: middle;
+
+                font-size: 20px;
+                color: var(--primary-dark);
+
+                opacity: 1;
+                transition: opacity 0.05s;
+            }
+
+            /* The container for the cards */
+            #projects {
+                position: relative;
+
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+
+                height: 100%;
+                margin: 70px 0 0 0;
+            }
+
+            /* The details of the cards */
+            .project-card {
+                width: 250px;
+                height: 350px;
+                margin: 0 40px 60px 40px;
+
+                border-style: solid;
+                border-width: 1px;
+                border-radius: 20px;
+                border-color: var(--dark);
+
+                box-shadow: 0px 4px 0px 0px rgb(60, 60, 60, 0.5);
+                background-color: var(--light);
+
+                transition: transform 0.1s;
+                animation-name: fade-in;
+                animation-duration: 0.2s;
+                animation-timing-function: ease-out;
+
+                cursor: pointer;
+
+                overflow: hidden;
+            }
+            .project-card:hover {
+                transform: scale(1.05, 1.05); /* o -> O */
+            }
+
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            
+            /* Details the parts of the project cards */
+            .project-img {
+                width: 250px;
+                height: 250px;
+
+                background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/84/Ryssebergen_2012b.jpg');
+                background-position: center center;
+                background-size: cover;
+
+                border-bottom: solid 2px var(--dark)
+
+            }
+            .project-title {
+                margin: 5px auto;
+                width: max-content;
+                
+                font-size: 1.3em;
+                text-decoration: underline;
+
+                color: var(--primary-dark);
+            }
+            .description {
+                margin: -2px 7px 7px 7px;
+                text-align: center;
+
+                color: var(--primary-dark);
+            }
+
+            /* General features of the footer */
+            footer {
+                position: relative;
+                
+                display: flex;
+                flex: 0 0 0;
+                flex-direction: row;
+
+                color: var(--primary);
+                background-color: var(--primary-dark);
+            }
+            footer a {
+                color: var(--primary);
+            }
+            footer strong {
+                margin-left: 16px;
+            }
+
+            /* Make the offset */
+            #footer-nav {
+                margin-top: 27px;
+                margin-left: 5%;
+            }
+
+            /* Codec */
+            #footer-logo {
+                margin-left: 0px;
+                font-size: 40px;
+            }
+
+            /* Makes a small white line to offset the text so it matches the copyright c */
+            #nav-tab {
+                position: relative;
+                top: 4px;
+                width: 2px;
+                height: 1.2em;
+                
+                border-radius: 2px;
+
+                background-color: var(--primary);
+                margin-right: 2px;
+            }
+            #nav-container {
+                position: relative;
+                top: 3px;
+                margin-left: 7px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+
+                width: 200px;
+                flex-grow: 1;
+            }
+            #copyright {
+                margin-top: 18px;
+                margin-left: 2px;
+            }
+
+            /* DESIGN STUFF TO GET RID OF */
+            #half {
+                top: calc(50% - 1px);
+            }
+            #quarter {
+                top: calc(21% - 1px);
+            }
+            #three-quarters {
+                top: calc(79% - 1px);
+            }
+            .test-line {
+                position: absolute;
+                left: 0px;
+                width: 100%;
+                height: 2px;
+
+                background-color: white;
+            }
+
+            #contact-container {
+                position: absolute;
+                right: 0px;
+            }
+
+            /* If the screen gets too thin, hide the penrose */
+            @media (max-width: 1000px) {
+                #penrose1 {
+                    display: none;
+                }
+            }
+
+            /* Centering and sizing of the penrose */
+            #footer-img-container {
+                height: calc(var(--penrose-width) + 20px);
+            }
+            .penrose-container {
+                position: absolute;
+                top: 0px;
+                height: 100%;
+                left: calc(50% - var(--penrose-width) * 0.5);
+                
+                overflow: hidden;
+            }
+            #penrose1 {
+                position: relative;
+                top: 10px;
+
+                width: calc(var(--penrose-width));
+
+                z-index: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- A wrapper for the page -->
+        <div id='container'>
+            <!-- Banner at the top -->
+            <header>
+                <div id='cover-color'>
+                    <h1><a id='banner-title' href='/'>Codec</a></h1>
+                </div>
+            </header>
+
+            <!-- Main content (where the project cards are) -->
+            <section id='main'>
+                <div id='loading'>Loading...</div>
+                <section id='projects'></section>
+            </section>
+
+            <!-- The footer -->
+            <footer>
+                <div id='footer-nav'>
+                    <strong id='footer-logo'>Codec</strong>
+
+                    <!-- Navigation links -->
+                    <div id='nav-container'>
+                        <span id='nav-tab'></span>
+                        <a href='/'>Home</a></li>
+                        <a href='/browse/'>Browse</a></li>
+                        <a onclick='randomProject();' style='text-decoration: underline; cursor: pointer;'>Random</a></li>
+                    </div>
+
+                    <div id='copyright'>&copy; 2023. Henry Termondt. All rights reserved.</div>
+                </div>
+                <!-- <div id='half' class='test-line'></div>
+                <div id='quarter' class='test-line'></div>
+                <div id='three-quarters' class='test-line'></div> -->
+                <!-- <div id='nav-container'>
+                        <strong>Pages:</strong>
+                        <ul>
+                            <li><a href='/'>Home Page</a></li>
+                            <li><a href='/browse/'>Browse Projects</a></li>
+                            <li><a onclick='randomProject();' style='text-decoration: underline;'>Random Project</a></li>
+                        </ul>
+                    </div> -->
+
+                <!-- The penrose in the center -->
+                <div id='footer-img-container'>
+                    <div id='penrose1-container' class='penrose-container'>
+                        <img id='penrose1' class='penrose' src='/projects/penrose-tilings/tinted-penrose1.png' width='400'>
+                    </div>
+                </div>
+                <div></div>
+
+                <!-- <div id='contact-container'>
+                    <strong>Pages:</strong>
+                    <ul>
+                        <li><a href='/'>Home Page</a></li>
+                        <li><a href='/browse/'>Browse Projects</a></li>
+                        <li><a onclick='randomProject();' style='text-decoration: underline;'>Random Project</a></li>
+                    </ul>
+                </div> -->
+            </footer>
+
+            <!-- Filter to fix the colors -->
+            <div id='filter'></div>
+        </div>
+
+        <!-- Deals with the project cards -->
+        <script>
+
+const projectsContainer = document.getElementById('projects');
+function createProjectCard(name, project) { // Creates a card for a projects
+    // Creates the elements
+    const container = document.createElement('div'),
+        img = document.createElement('div'),
+        title = document.createElement('div'),
+        desc = document.createElement('div');
+    
+    // Assigns classes
+    container.className = 'project-card';
+    img.className = 'project-img';
+    title.className = 'project-title';
+    desc.className = 'description';
+
+    // Assigns the event listener for changing the page to the correct project
+    container.onclick = () => {
+        window.location.assign(`/projects/?p=${name}`);
+    };
+
+    // Sets the content of the card
+    title.textContent = project.name;
+    desc.textContent = project.desc
+    img.style.backgroundImage = `url('${project.img}')`;
+
+    // Add the elements together
+    container.append(img, title, desc);
+
+    // Add the card to the page
+    projectsContainer.appendChild(container);
+}
+
+const loading = document.getElementById('loading');
+
+let projectNames;
+const randomProject = () => { // Selects a random project that isn't the current one
+    let choice = `?p=${projectNames[Math.random() * projectNames.length | 0]}`
+    while(choice === location.search) choice = `?p=${projectNames[Math.random() * projectNames.length | 0]}`
+
+    location.assign('/projects/' + choice); // Creates the path to the project page and sends the user there
+};
+
+let projects; // All of the data for the projects
+fetch('/projects/projects.json').then(data => {
+    data.json().then(response => {
+        projects = response;
+
+        // Creates the cards
+        for (const pname in projects) {
+            if (pname !== 'newtons-fractal') createProjectCard(pname, projects[pname]);
+        }
+
+        loading.style.opacity = '0'; // Gets rid of the loading symbol
+
+        projectNames = Object.keys(response); // Gets the names of the projects (they are stored as the keys of the object)
+    });
+});
+
+// Sets the size of the penrose tilings when resizing
+const resize = () => {
+    let penroseWidth = window.innerWidth * 0.5;
+    if (penroseWidth > 170) penroseWidth = 170; // 570
+    document.querySelector(':root').style.setProperty('--penrose-width', `${penroseWidth}px`);
+};
+window.onresize = resize;
+resize();
+
+
+        </script>
+    </body>
+</html>
